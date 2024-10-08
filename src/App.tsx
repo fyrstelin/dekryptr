@@ -21,8 +21,8 @@ export function App() {
           <h1>{landingPage.welcome}</h1>
           
           <TextInput
-            label='Who are you?'
-            placeholder='No name'
+            label={landingPage.name.label}
+            placeholder={landingPage.name.placeholder}
             value={name ?? user.name}
             onChange={e => setName(e.currentTarget.value)}
             onBlur={() => {

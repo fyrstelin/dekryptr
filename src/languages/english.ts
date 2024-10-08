@@ -5,6 +5,10 @@ export default Language({
   title: 'English',
   landingPage: {
     welcome: 'Welcome to DeKryptR',
-    newGame: 'New game'
+    newGame: 'New game',
+    name: {
+      label: 'Who are you?',
+      placeholder: "Mr Unknown"
+    }
   }
 })
