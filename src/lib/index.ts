@@ -76,15 +76,9 @@ export const useStream = <T>(stream?: Observable<T>) => {
   useEffect(() => {
     setData(undefined)
     if (!stream) return
-    const subscription = stream.subscribe(value => {
-      console.log('stream', value)
-      return setData(value);
-    })
+    const subscription = stream.subscribe(value => setData(value))
 
-    return () => {
-      console.log('unsubscribe')
-      return subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
     
   }, [stream])
 
