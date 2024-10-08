@@ -20,7 +20,7 @@ const router = createBrowserRouter([{
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <MantineProvider>
-      <AppShell padding='md'>
+      <AppShell padding='md' withBorder={false}>
         <RouterProvider router={router} />
       </AppShell>
     </MantineProvider>

@@ -38,7 +38,7 @@ export function App() {
         </Stack>
       </AppShell.Main>
 
-      <AppShell.Footer>
+      <AppShell.Footer p='xs'>
         <Group justify='flex-end'>
           <NativeSelect
             value={user.language}
