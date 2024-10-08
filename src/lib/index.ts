@@ -27,26 +27,25 @@ const store = getFirestore(app);
 
 export const from = <T extends {}>(path: string, ...segments: ReadonlyArray<string>) => ({
   patch: (id: string, data: Partial<T>) => setDoc(doc(store, path, ...segments, id), data, { merge: true }),
-  stream: (id: string) => new Observable<T>(s => {
+  stream: (id: string, defaultTo?: T) => new Observable<T>(s => {
     return onSnapshot(doc(store, path, ...segments, id), snapshot => {
-      const d = snapshot.data();
-      if (d) {
-        s.next(snapshot.data() as T)
-      } else {
-        s.complete()
+      const data = snapshot.data() ?? defaultTo;
+      if (data) {
+        s.next(data as T)
       }
-    });
+    }, err => s.error(err), () => s.complete());
   })
 });
 
 
 export const useUser = () => {
   const [userId, setUserId] = useState<string | null>();
+
   const user = useStream(useMemo(() => userId ? from<{
     name?: string
     language?: string
   }>('users')
-    .stream(userId)
+    .stream(userId, {})
     .pipe(
       map(({ name, language }) => ({
         id: userId,
@@ -77,9 +76,15 @@ export const useStream = <T>(stream?: Observable<T>) => {
   useEffect(() => {
     setData(undefined)
     if (!stream) return
-    const subscription = stream.subscribe(setData)
+    const subscription = stream.subscribe(value => {
+      console.log('stream', value)
+      return setData(value);
+    })
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('unsubscribe')
+      return subscription.unsubscribe();
+    };
     
   }, [stream])
 
