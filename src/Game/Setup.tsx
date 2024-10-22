@@ -34,7 +34,9 @@ const Team: FC<{
     <>
       <h1>
         {children}
-        {onTeam
+      </h1>
+      
+      {onTeam
           ? team.includes(userId)
             ? <Button onClick={onLeave}>
               Leave
@@ -44,9 +46,12 @@ const Team: FC<{
             Join
           </Button>
         }
-      </h1>
       
-      {team.map(uid => <PlayerName uid={uid} key={uid}/>)}
+      <ul>
+        {team.map(uid => <li key={uid}>
+          <PlayerName uid={uid}/>
+        </li>)}
+      </ul>
     </>
   )
 }
