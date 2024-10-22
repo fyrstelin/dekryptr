@@ -13,5 +13,12 @@ service cloud.firestore {
       allow create: if getUserId() != null;
       allow update: if getUserId() == userId;
     }
+
+    match /games/{gameId} {
+      allow list: if resource.data.players[getUserId()] != null;
+      allow get: if true;
+      allow create: if getUserId() != null;
+      allow update: if getUserId() != null && resource.data.phase == 'setup';
+    }
   }
 }

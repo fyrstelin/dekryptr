@@ -1,0 +1,36 @@
+html {
+  font-size: xx-large;
+}
+
+body {
+  margin: 0;
+}
+
+* {
+  font-family: monospace;
+}
+
+main {
+  max-width: 800px;
+  margin: auto;
+}
+
+header {
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  padding: 8px;
+}
+
+a {
+  margin: 0 4px;
+}
+
+input, button {
+  font-size: inherit;
+}
