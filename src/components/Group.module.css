@@ -1,7 +1,16 @@
-.group {
-  display: flex;
 
-  > * {
-    flex: 1;
+@media (min-width: 769px) {
+  .group {
+    display: flex;
+  
+    > .element {
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .element:not(:first-child) {
+    border-top: 1px solid #ddd;
   }
 }

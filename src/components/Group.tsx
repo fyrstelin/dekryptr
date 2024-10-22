@@ -5,7 +5,7 @@ export const Group: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <div className={styles.group}>
-      {Children.map(children, child => <div>{child}</div>)}
+      {Children.map(children, child => <div className={styles.element}>{child}</div>)}
     </div>
   )
 }
