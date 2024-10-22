@@ -3,6 +3,7 @@ import { Game, User } from "../@types/store"
 import { from, useStream, useUser } from "../lib"
 import { map } from "rxjs"
 import { Button } from "../components"
+import { Group } from "../components/Group"
 
 const PlayerName: FC<{
   uid: string
@@ -10,8 +11,8 @@ const PlayerName: FC<{
   const name = useStream(useMemo(() => from<User>('users')
     .stream(uid)
     .pipe(
-      map(x => x.name)
-    ), [uid])) ?? uid
+      map(x => x.name || 'Mr unknown')
+    ), [uid]))
 
   return <>{name}</>
 }
@@ -19,8 +20,8 @@ const PlayerName: FC<{
 const Team: FC<{
   team: ReadonlyArray<string>
   children: string
-  onJoin: () => void
-  onLeave: () => void
+  onJoin: () => Promise<void>
+  onLeave: () => Promise<void>
 }> = ({
   team,
   children,
@@ -73,7 +74,7 @@ export const Setup: FC<{
       'team-2': [] as string[]
     })
 
-  const join = (team: 'team-1' | 'team-2') => () => {
+  const join = (team: 'team-1' | 'team-2') => () =>
     from<Game>('games')
       .execute(id, g => ({
         ...g,
@@ -82,9 +83,8 @@ export const Setup: FC<{
           [userId!]: team
         }
       }))
-  }
 
-  const leave = () => {
+  const leave = () =>
     from<Game>('games')
       .execute(id, g => {
         const { [userId!]: _, ...players } = g.players
@@ -93,21 +93,22 @@ export const Setup: FC<{
           players
         })
       })
-  }
 
   return <>
     <header>{id}</header>
     <main>
-      <Team
-        team={teams['team-1']}
-        onJoin={join('team-1')}
-        onLeave={leave}
-      >Team 1</Team>  
-      <Team
-        team={teams['team-2']}
-        onJoin={join('team-2')}
-        onLeave={leave}
-      >Team 2</Team>  
+      <Group>
+        <Team
+          team={teams['team-1']}
+          onJoin={join('team-1')}
+          onLeave={leave}
+        >Team 1</Team>  
+        <Team
+          team={teams['team-2']}
+          onJoin={join('team-2')}
+          onLeave={leave}
+        >Team 2</Team>  
+      </Group>
     </main>
 
   </>

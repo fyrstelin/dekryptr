@@ -44,7 +44,7 @@ export function LandingPage() {
         />
           
         <Button
-          onClick={() => {
+          onClick={() =>
             from<Game>("games")
               .insert({
                 phase: 'setup',
@@ -53,7 +53,7 @@ export function LandingPage() {
               .then(id => {
                 navigateTo(['games', id].join('/'))
               })
-          }}
+          }
         >
           {landingPage.newGame}
         </Button>
