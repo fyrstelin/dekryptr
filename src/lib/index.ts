@@ -1,11 +1,11 @@
 import { initializeApp } from 'firebase/app'
-import { collection, doc, getFirestore, initializeFirestore, onSnapshot, persistentLocalCache, persistentMultipleTabManager, query, runTransaction, setDoc, where, WhereFilterOp } from 'firebase/firestore'
+import { collection, doc, getFirestore, onSnapshot, query, runTransaction, setDoc, where, WhereFilterOp } from 'firebase/firestore'
 import { getAuth, signInAnonymously } from 'firebase/auth'
 import { useEffect, useMemo, useState } from 'react';
 import { map, Observable } from 'rxjs';
 import languages from '../languages';
 import { User } from '../@types/store';
-import { customAlphabet, nanoid, urlAlphabet } from 'nanoid';
+import { customAlphabet, urlAlphabet } from 'nanoid';
 
 const supportedLanguages = Object.keys(languages)
 
