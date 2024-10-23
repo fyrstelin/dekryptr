@@ -1,1 +1,2 @@
-export { default as Anchor } from './Anchor'
+export { TextInput } from './TextInput'
+export { Button } from './Button'

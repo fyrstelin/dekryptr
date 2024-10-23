@@ -1,9 +1,11 @@
 import { initializeApp } from 'firebase/app'
-import { doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore'
+import { collection, doc, getFirestore, onSnapshot, query, runTransaction, setDoc, where, WhereFilterOp } from 'firebase/firestore'
 import { getAuth, signInAnonymously } from 'firebase/auth'
 import { useEffect, useMemo, useState } from 'react';
 import { map, Observable } from 'rxjs';
 import languages from '../languages';
+import { User } from '../@types/store';
+import { customAlphabet, urlAlphabet } from 'nanoid';
 
 const supportedLanguages = Object.keys(languages)
 
@@ -26,6 +28,33 @@ const store = getFirestore(app);
 
 
 export const from = <T extends {}>(path: string, ...segments: ReadonlyArray<string>) => ({
+  where: (key: string, operator: WhereFilterOp, value: any) => {
+    return {
+      stream: () => new Observable<ReadonlyArray<{ data: T, id: string }>>(s => {
+        const q = query(collection(store, path, ...segments), where(key, operator, value))
+        return onSnapshot(q, snapshot => {
+          const ts = [] as { data: T, id: string }[]
+          snapshot.forEach(d => ts.push({
+            id: d.id,
+            data: d.data() as any
+          }));
+          s.next(ts)
+        }, err => s.error(err), () => s.complete());
+      })
+    }
+  },
+  insert: async (data: T) => {
+    const i = id();
+    await setDoc(doc(store, path, ...segments, i), data)
+    return i
+  },
+  execute: (id: string, command: (data: T) => T | void) => runTransaction(store, async tx => {
+    const ref = doc(store, path, ...segments, id);
+    const snapshot = await tx.get(ref)
+    if (!snapshot.exists()) throw new Error('Data not found');
+    const data = snapshot.data()
+    tx.update(ref, command(data as any) ?? data)
+  }),
   patch: (id: string, data: Partial<T>) => setDoc(doc(store, path, ...segments, id), data, { merge: true }),
   stream: (id: string, defaultTo?: T) => new Observable<T>(s => {
     return onSnapshot(doc(store, path, ...segments, id), snapshot => {
@@ -34,6 +63,14 @@ export const from = <T extends {}>(path: string, ...segments: ReadonlyArray<stri
         s.next(data as T)
       }
     }, err => s.error(err), () => s.complete());
+  }),
+  streamAll: () => new Observable<ReadonlyArray<T>>(s => {
+    const q = query(collection(store, path, ...segments))
+    return onSnapshot(q, snapshot => {
+      const ts = [] as T[]
+      snapshot.forEach(d => ts.push(d.data() as any));
+      s.next(ts)
+    }, err => s.error(err), () => s.complete());
   })
 });
 
@@ -41,10 +78,7 @@ export const from = <T extends {}>(path: string, ...segments: ReadonlyArray<stri
 export const useUser = () => {
   const [userId, setUserId] = useState<string | null>();
 
-  const user = useStream(useMemo(() => userId ? from<{
-    name?: string
-    language?: string
-  }>('users')
+  const user = useStream(useMemo(() => userId ? from<User>('users')
     .stream(userId, {})
     .pipe(
       map(({ name, language }) => ({
@@ -86,3 +120,5 @@ export const useStream = <T>(stream?: Observable<T>) => {
 }
 
 export const useLanguage = () => languages[useUser()?.language ?? defaultLanguage];
+
+export const id = customAlphabet(urlAlphabet, 8);
