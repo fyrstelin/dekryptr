@@ -48,7 +48,10 @@ export function LandingPage() {
             from<Game>("games")
               .insert({
                 phase: 'setup',
-                players: {}
+                players: {},
+                keySize: 4,
+                messageSize: 3,
+                history: {}
               })
               .then(id => {
                 navigateTo(['games', id].join('/'))

@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  gap: 8px;
+
+  > div {
+    flex: 1;
+
+    
+    &:first-child,
+    &:last-child {
+      flex: none;
+      width: 60px;
+    }
+  }
+
+}
+
+.back {
+  text-decoration: none;
+  color: inherit;
+}

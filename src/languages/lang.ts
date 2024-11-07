@@ -1,15 +1,16 @@
-export type Language = {
+export type Language = Readonly<{
   id: string
   title: string
-  landingPage: {
+  landingPage: Readonly<{
     myGames: string
-    name: {
+    name: Readonly<{
       label: string
       placeholder: string
-    }
+    }>
     newGame: string
     welcome: string
-  }
-}
+  }>,
+  nouns: ReadonlyArray<string>
+}>
 
 export const Language = (lang: Language) => lang;

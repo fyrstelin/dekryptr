@@ -1,0 +1,30 @@
+header.opponents-turn {
+  background: black;
+}
+
+.cipher {
+  border: 2px solid black;
+  padding: 36px 8px;
+  margin: 16px;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.hint {
+  border: 2px solid #ccc;
+  padding: 36px 8px;
+  margin: 16px;
+  text-align: center;
+  border-radius: 50px;
+}
+
+.selected {
+  border-style: dotted;
+}
+
+.my-suggestion {
+  font-size: 0.6em;
+  color: #333;
+  font-style: italic;
+  height: 0;
+}
