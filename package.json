@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "firebase": "^10.14.0",
     "nanoid": "^5.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.26.2",
     "react-router-dom": "^6.26.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

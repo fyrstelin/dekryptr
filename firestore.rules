@@ -18,7 +18,13 @@ service cloud.firestore {
       allow list: if resource.data.players[getUserId()] != null;
       allow get: if true;
       allow create: if getUserId() != null;
-      allow update: if getUserId() != null && resource.data.phase == 'setup';
+      allow update: if getUserId() != null;
+    }
+    
+    match /games/{gameId}/screens/{screenId} {
+      allow get: if getUserId() in resource.data.players;
+      allow create: if getUserId() != null;
+      allow update: if getUserId() in resource.data.players;
     }
   }
 }

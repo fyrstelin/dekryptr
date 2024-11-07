@@ -53,7 +53,7 @@ export const from = <T extends {}>(path: string, ...segments: ReadonlyArray<stri
     const snapshot = await tx.get(ref)
     if (!snapshot.exists()) throw new Error('Data not found');
     const data = snapshot.data()
-    tx.update(ref, command(data as any) ?? data)
+    tx.update(ref, (command(data as any) ?? data))
   }),
   patch: (id: string, data: Partial<T>) => setDoc(doc(store, path, ...segments, id), data, { merge: true }),
   stream: (id: string, defaultTo?: T) => new Observable<T>(s => {
@@ -122,3 +122,8 @@ export const useStream = <T>(stream?: Observable<T>) => {
 export const useLanguage = () => languages[useUser()?.language ?? defaultLanguage];
 
 export const id = customAlphabet(urlAlphabet, 8);
+
+export const shuffle = <T = unknown>(ts: ReadonlyArray<T>) => ts
+  .map(t => ({ t, r: Math.random()}))
+  .sort((a, b) => a.r - b.r)
+  .map(x => x.t);

@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import { FC, useMemo } from "react"
-import styles from './TextInput.module.css'
+import styles from './style.module.css'
 
 export const TextInput: FC<{
   id?: string
@@ -8,7 +8,6 @@ export const TextInput: FC<{
   placeholder: string
 
   label?: string
-
 
   onChange: (value?: string) => void
   onSave: () => Promise<void>
@@ -23,7 +22,7 @@ export const TextInput: FC<{
   const id = useMemo(() => idFromProps ?? ('TextInput-' + nanoid(8)), [idFromProps])
 
   return (
-    <div className={styles['text-input']}>
+    <div className={styles['input']}>
       <label htmlFor={id}>{label}</label>
       <input
         id={id}
