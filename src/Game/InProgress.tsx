@@ -33,7 +33,7 @@ const Hint: FC<PropsWithChildren<{
 export const InProgress: FC<{
   id: string
   game: Game & {
-    phase: 'in-progress'
+    phase: 'encrypting' | 'decrypting'
   }
 }> = ({
   id: gameId,
@@ -81,13 +81,13 @@ export const InProgress: FC<{
   }, [myCiphers])
 
   useEffect(() => {
-    setSuggestions(game.currentCode.map(() => undefined))
-  }, [game.currentCode])
+    setSuggestions([...new Array(game.messageSize)].map(() => undefined))
+  }, [game.messageSize, game.cryptographer])
 
   const submitHints = async () => from<Game>('games')
     .execute(gameId, g => ({
       ...g,
-      hints: game.currentCode.map(i => hints[i].trim())
+      // hints: game.currentCode.map(i => hints[i].trim())
     }));
 
   const suggest = () => from<Screen>("games", gameId, 'screens')
@@ -118,9 +118,9 @@ export const InProgress: FC<{
                 onClick={() => setSelectedCipher(i)}
                 selected={selectedCipher === i}
               >{c}</Cipher>
-              {myTurn && !game.hints &&
+              {myTurn && game.phase === 'encrypting' &&
                 <input
-                  disabled={!!game.hints || !game.currentCode.includes(i)}
+                  disabled={game.message.includes(i)}
                   value={hints[i] ?? ''}
                   onChange={e => setHints(p => p.map((h, idx) => idx === i ? e.currentTarget.value : h))}
                   placeholder='Hint'
@@ -132,7 +132,7 @@ export const InProgress: FC<{
         <hr/>
 
         <Group>
-          {game.hints?.map((h, i) => (
+          {game.phase === 'decrypting' && game.cipher.map((h, i) => (
             <Hint
               key={i}
               onClick={() => setSelectedHint(i)}
@@ -145,11 +145,11 @@ export const InProgress: FC<{
         </Group>
       </main>
       <footer>
-        { myTurn && <Button onClick={hints.every((h, i) => !game.currentCode.includes(i) || h) 
+        { myTurn && <Button onClick={hints.every((h, i) => !game.message.includes(i) || h) 
           ? submitHints
           : undefined
         }>Submit</Button> }
-        { game.hints && <Button onClick={suggestions.every(x => x !== undefined) ? suggest : undefined}>
+        { myTurn && <Button onClick={suggestions.every(x => x !== undefined) ? suggest : undefined}>
             Suggest
           </Button>}
       </footer>

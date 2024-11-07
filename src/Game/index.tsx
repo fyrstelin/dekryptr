@@ -24,7 +24,7 @@ export const Game: FC<{
 
   switch (game.phase) {
     case "setup": return <Setup id={id} game={game}/>
-    case 'in-progress': return <InProgress id={id} game={game}/>
+    case 'encrypting': return <InProgress id={id} game={game}/>
     default: return (
       <main>
         <h2>Unknown game phase: {game.phase}</h2>
